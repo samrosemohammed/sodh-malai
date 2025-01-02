@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { cn } from "@/lib/utils";
+import Providers from "@/components/Providers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,14 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="light">
-      <body
-        className={`${cn("min-h-screen font-poppins grainy")} ${
-          geistSans.variable
-        } ${geistMono.variable} antialiased`}
-      >
-        <NavBar />
-        {children}
-      </body>
+      <Providers>
+        <body
+          className={`${cn("min-h-screen font-poppins grainy")} ${
+            geistSans.variable
+          } ${geistMono.variable} antialiased`}
+        >
+          <NavBar />
+          {children}
+        </body>
+      </Providers>
     </html>
   );
 }

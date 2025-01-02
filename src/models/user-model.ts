@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { model, Schema, Model } from "mongoose";
 
 interface IUser {
   kinde_id: string;
@@ -8,18 +8,25 @@ interface IUser {
   given_name: string;
 }
 
-const userSchema = new Schema<IUser>({
-  kinde_id: { type: String, required: true },
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  family_name: { type: String, required: true },
-  given_name: { type: String, required: true },
-});
+export interface MongoUser extends IUser, Document {}
 
-const userModel = () => {
-  return mongoose.models && mongoose.models.User
-    ? mongoose.models.User
-    : model<IUser>("User", userSchema);
+export type TUser = IUser & {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
-export default userModel;
+const UserSchema = new Schema<MongoUser>(
+  {
+    kinde_id: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    family_name: { type: String, required: true },
+    given_name: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+const UserModel: Model<MongoUser> =
+  mongoose.models.User || mongoose.model<MongoUser>("User", UserSchema);
+export default UserModel;

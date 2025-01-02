@@ -16,30 +16,29 @@ export default {
       },
     },
 
-    keyframes: {
-      "accordian-down": {
-        from: {
-          height: "0",
-        },
-        to: {
-          height: "var(--radix-accordian-content-height)",
-        },
-      },
-      "accordian-up": {
-        from: {
-          height: "var(--radix-accordian-content-height)",
-        },
-        to: {
-          height: "0",
-        },
-      },
-    },
-    animation: {
-      "accordian-up": "accordian-up 0.2s ease-out",
-      "accordian-down": "accordian-down 0.2s ease-out",
-    },
-
     extend: {
+      keyframes: {
+        "accordian-down": {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordian-content-height)",
+          },
+        },
+        "accordian-up": {
+          from: {
+            height: "var(--radix-accordian-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+      },
+      animation: {
+        "accordian-up": "accordian-up 0.2s ease-out",
+        "accordian-down": "accordian-down 0.2s ease-out",
+      },
       maxWidth: {
         "8xl": "1408px",
       },
