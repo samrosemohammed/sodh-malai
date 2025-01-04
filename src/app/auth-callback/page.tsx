@@ -10,7 +10,7 @@ const Page = () => {
   const origin = searchParams.get("origin");
 
   // Perform the query
-  const { data, isLoading, isSuccess, isError } = trpc.authCallback.useQuery(
+  const { data, isLoading, isSuccess, error } = trpc.authCallback.useQuery(
     undefined,
     {
       retry: true,
@@ -23,17 +23,22 @@ const Page = () => {
     if (isSuccess && data) {
       console.log("Query successful! User data:", data);
       router.push(origin ? `/${origin}` : "/dashboard");
+    } else if (error && data) {
+      console.error("Query failed! Error:", error.message);
+      error.data?.code === "UNAUTHORIZED" && router.push("/sign-in");
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, error, router, origin, data]);
 
   return (
-    <div className="w=full mt-24 flex justify-center">
-      <div className="flex flex-col items-center gap-2">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-800" />
-        <h3 className="text-xl font-semibold">Setting up your account...</h3>
-        <p>You will be redirected automatically.</p>
+    isLoading && (
+      <div className="w=full mt-24 flex justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="h-8 w-8 animate-spin text-zinc-800" />
+          <h3 className="text-xl font-semibold">Setting up your account...</h3>
+          <p>You will be redirected automatically.</p>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
