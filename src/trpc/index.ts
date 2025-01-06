@@ -31,13 +31,13 @@ export const appRouter = router({
     await dbConnect();
     const userDb = await UserModel.findOne({ kinde_id: userId });
     if (!userDb) throw new TRPCError({ code: "UNAUTHORIZED" });
-    await FileModel.create({
-      name: "test",
-      uploadStatus: "PENDING",
-      url: "test",
-      key: "test",
-      user: userDb._id,
-    });
+    // await FileModel.create({
+    //   name: "test",
+    //   uploadStatus: "PENDING",
+    //   url: "test",
+    //   key: "test",
+    //   user: userDb._id,
+    // });
     const files: TFile[] = await FileModel.find({ user: userDb._id });
     return { success: true, files };
   }),

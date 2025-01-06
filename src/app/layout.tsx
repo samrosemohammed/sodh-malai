@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar";
 import { cn } from "@/lib/utils";
 import Providers from "@/components/Providers";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
             geistSans.variable
           } ${geistMono.variable} antialiased`}
         >
+          <Toaster />
           <NavBar />
           {children}
         </body>
