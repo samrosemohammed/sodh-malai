@@ -1,3 +1,6 @@
+import dbConnect from "@/client/mongoose";
+import FileModel from "@/models/file-model";
+import UserModel from "@/models/user-model";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
@@ -7,7 +10,7 @@ const f = createUploadthing();
 const auth = (req: Request) => ({ id: "fakeId" });
 export const ourFileRouter = {
   pdfUploader: f({
-    image: {
+    pdf: {
       maxFileSize: "4MB",
       maxFileCount: 1,
     },
@@ -19,9 +22,20 @@ export const ourFileRouter = {
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url", file.url);
-      return { uploadedBy: metadata.userId };
+      await dbConnect();
+      const userDb = await UserModel.findOne({ kinde_id: metadata.userId });
+      try {
+        const createFile = await FileModel.create({
+          key: file.key,
+          name: file.name,
+          url: file.url,
+          uploadStatus: "PROCESSING",
+          user: userDb?._id,
+        });
+        console.log("File saved to database:", createFile);
+      } catch (error) {
+        console.error("Error saving file to database:", error);
+      }
     }),
 } satisfies FileRouter;
 

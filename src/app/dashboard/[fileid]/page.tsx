@@ -22,6 +22,7 @@ const Page = async ({ params }: PageProps) => {
   if (!dbUser) redirect(`auth-callback?origin=dashboard/${fileid}`);
   const file = await FileModel.findOne({ _id: fileid, user: dbUser._id });
   if (!file) notFound();
+  console.log("Url of the file ", file.url);
 
   return (
     <div className="flex-1 justify-between flex flex-col h-[calc-(100vh-3.5rem)]">
@@ -29,7 +30,7 @@ const Page = async ({ params }: PageProps) => {
         {/* Left side */}
         <div className="flex-1 xl:flex">
           <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
-            <PdfRenderer />
+            <PdfRenderer url={file.url} />
           </div>
         </div>
 
