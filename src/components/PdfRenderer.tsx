@@ -1,6 +1,6 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2, Search } from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -12,6 +12,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -26,7 +32,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const customPageValidator = z.object({
     page: z
       .string()
-      .refine((num) => Number(num) > 0 && Number(num) < numPages!),
+      .refine((num) => Number(num) > 0 && Number(num) <= numPages!),
   });
   type TCustomPageValidator = z.infer<typeof customPageValidator>;
   const {
@@ -50,7 +56,13 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
         <div className="flex items-center gap-1.5">
           <Button
             disabled={currentPage <= 1}
-            onClick={() => setCurrentPage((prev) => (prev - 1 ? prev - 1 : 1))}
+            onClick={() =>
+              setCurrentPage((prev) => {
+                const newPage = prev - 1 ? prev - 1 : 1;
+                setValue("page", String(newPage));
+                return newPage;
+              })
+            }
             variant="ghost"
             aria-label="previous page"
           >
@@ -77,15 +89,29 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           <Button
             disabled={numPages === undefined || currentPage === numPages}
             onClick={() =>
-              setCurrentPage((prev) =>
-                prev + 1 > numPages! ? numPages! : prev + 1
-              )
+              setCurrentPage((prev) => {
+                const newPage = prev + 1 > numPages! ? numPages! : prev + 1;
+                setValue("page", String(newPage));
+                return newPage;
+              })
             }
             variant="ghost"
             aria-label="next page"
           >
             <ChevronUp className="w-4 h-4" />
           </Button>
+        </div>
+        <div className="space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="gap-1.5" variant="ghost" aria-label="zoom">
+                <Search className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>100%</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
