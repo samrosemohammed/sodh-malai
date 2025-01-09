@@ -1,5 +1,5 @@
 import dbConnect from "@/client/mongoose";
-import ChatWrapper from "@/components/ChatWrapper";
+import ChatWrapper from "@/components/chat/ChatWrapper";
 import PdfRenderer from "@/components/PdfRenderer";
 import FileModel from "@/models/file-model";
 import UserModel from "@/models/user-model";
@@ -35,7 +35,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
 
         <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-          <ChatWrapper />
+          <ChatWrapper fileId={fileid.toString()} />
         </div>
       </div>
     </div>

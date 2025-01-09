@@ -7,7 +7,6 @@ import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "fakeId" });
 export const ourFileRouter = {
   pdfUploader: f({
     pdf: {
@@ -15,7 +14,7 @@ export const ourFileRouter = {
       maxFileCount: 1,
     },
   })
-    .middleware(async ({ req }) => {
+    .middleware(async () => {
       const { getUser } = getKindeServerSession();
       const user = await getUser();
       if (!user || !user.id) throw new UploadThingError("Unauthorized");
