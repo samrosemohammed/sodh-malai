@@ -23,18 +23,19 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       await dbConnect();
       const userDb = await UserModel.findOne({ kinde_id: metadata.userId });
+      const createdFile = await FileModel.create({
+        key: file.key,
+        name: file.name,
+        url: file.url,
+        uploadStatus: "PROCESSING",
+        user: userDb?._id,
+      });
+      console.log("File saved to database:", createdFile);
+
       try {
-        const createFile = await FileModel.create({
-          key: file.key,
-          name: file.name,
-          url: file.url,
-          uploadStatus: "PROCESSING",
-          user: userDb?._id,
-        });
-        console.log("File saved to database:", createFile);
-      } catch (error) {
-        console.error("Error saving file to database:", error);
-      }
+        // Step 1: Download and Load the PDF
+        // vectorize and index entire document
+      } catch (error) {}
     }),
 } satisfies FileRouter;
 

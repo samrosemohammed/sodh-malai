@@ -1,6 +1,7 @@
 import dbConnect from "@/client/mongoose";
 import { SendMessageValidator } from "@/lib/validator/SendMessageValidator";
 import FileModel from "@/models/file-model";
+import MessageModel from "@/models/message-model";
 import UserModel from "@/models/user-model";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextRequest } from "next/server";
@@ -20,4 +21,10 @@ export const POST = async (req: NextRequest) => {
   if (!file) {
     return new Response("File not found", { status: 404 });
   }
+  const messageDb = await MessageModel.create({
+    text: message,
+    isUserMessage: true,
+    user: userDb?._id,
+    file: fileId,
+  });
 };

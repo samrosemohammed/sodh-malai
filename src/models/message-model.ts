@@ -4,6 +4,7 @@ interface IMessage {
   text: string;
   isUserMessage: boolean;
   user: mongoose.Types.ObjectId;
+  file: mongoose.Types.ObjectId;
 }
 
 export interface MongoUser extends IMessage, Document {}
@@ -20,6 +21,11 @@ const MessageSchema = new Schema<MongoUser>(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    file: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "File",
       required: true,
     },
   },
