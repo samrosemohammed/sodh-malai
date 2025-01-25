@@ -41,7 +41,7 @@ export const appRouter = router({
       const { userId } = ctx;
       await dbConnect();
       const userDb = await UserModel.findOne({ kinde_id: userId });
-      const file = await FileModel.findOne({
+      const file: TFile | null = await FileModel.findOne({
         _id: input.fileId,
         user: userDb?._id,
       });

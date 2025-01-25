@@ -1,6 +1,6 @@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import React, { createContext, useState } from "react";
+import React, { createContext, ReactNode, useState } from "react";
 
 type StreamResponse = {
   addMessage: () => void;
@@ -16,7 +16,7 @@ export const ChatContext = createContext<StreamResponse>({
 });
 interface Props {
   fileId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,10 +41,10 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
     sendMessage({ message });
   };
   return (
-    <ChatContextProvider
+    <ChatContext.Provider
       value={{ addMessage, message, handleInputChange, isLoading }}
     >
       {children}
-    </ChatContextProvider>
+    </ChatContext.Provider>
   );
 };

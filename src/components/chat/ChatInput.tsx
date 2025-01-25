@@ -18,12 +18,14 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
               <Textarea
                 rows={1}
                 maxRows={4}
+                autoFocus
                 placeholder="Enter your question..."
                 className="resize-none pr-12 text-base py-3 scroll-thumb-blue scroll-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scroll-touch"
               />
               <Button
                 className="absolute bottom-1.5 right-[8px]"
                 aria-label="send message"
+                disabled={isDisabled}
               >
                 <Send className="h-4 w-4" />
               </Button>

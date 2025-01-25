@@ -27,4 +27,5 @@ export const POST = async (req: NextRequest) => {
     user: userDb?._id,
     file: fileId,
   });
+  
 };
