@@ -1,11 +1,11 @@
 "use client";
 import { trpc } from "@/app/_trpc/client";
 import ChatInput from "./ChatInput";
-import Message from "./Message";
 import { ChevronLeft, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import { ChatContextProvider } from "./ChatContext";
+import Messages from "./Messages";
 
 interface ChatWrapperProps {
   fileId: string;
@@ -76,7 +76,7 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
     <ChatContextProvider fileId={fileId}>
       <div className="relative min-h-full bg-zinc-50 flex divide divide-zinc-200 flex-col justify-between gap-2">
         <div className="flex-1 justify-between flex-col mb-28">
-          <Message />
+          <Messages fileId={fileId} />
         </div>
         <ChatInput />
       </div>

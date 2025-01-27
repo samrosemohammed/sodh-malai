@@ -17,9 +17,11 @@ export const POST = async (req: NextRequest) => {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
     const { id: userId } = user;
+
     if (!userId) {
       return new Response("Unauthorized", { status: 401 });
     }
+
     const { fileId, message } = SendMessageValidator.parse(body);
     await dbConnect();
     const userDb = await UserModel.findOne({ kinde_id: userId });
@@ -27,6 +29,7 @@ export const POST = async (req: NextRequest) => {
     if (!file) {
       return new Response("File not found", { status: 404 });
     }
+
     const messageDb = await MessageModel.create({
       text: message,
       isUserMessage: true,
@@ -34,8 +37,7 @@ export const POST = async (req: NextRequest) => {
       file: fileId,
     });
 
-    // 1. vectorize message
-
+    // Vectorize message
     const embeddings = new GoogleGenerativeAIEmbeddings({
       apiKey: process.env.GOOGLE_API_KEY,
     });
@@ -44,7 +46,12 @@ export const POST = async (req: NextRequest) => {
       pineconeIndex,
       namespace: file._id.toString(),
     });
-    const result = await vectorStore.similaritySearch(message, 4); // 4 is the number of similar messages to return
+
+    // Perform similarity search
+    const result = await vectorStore.similaritySearch(message, 4);
+    const hasRelevantContext = result && result.length > 0;
+
+    // Fetch previous messages
     const prevMessages = await MessageModel.find({ file: fileId })
       .sort({ createdAt: 1 })
       .limit(6);
@@ -54,16 +61,20 @@ export const POST = async (req: NextRequest) => {
       role: m.isUserMessage ? ("user" as const) : ("assistant" as const),
     }));
 
-    // 3. Construct the messages array for googleai
+    // Construct the messages array for Google AI
+    const contextText = hasRelevantContext
+      ? `\n\nCONTEXT:\n${result.map((r) => r.pageContent).join("\n\n")}`
+      : "\n\n(No context available)";
+
     const messages = [
       {
         role: "system",
         content:
-          "Use the following pieces of context (or previous conversation if needed) to answer the user's question in markdown format.",
+          "You are an AI assistant. Answer the user's questions in markdown format. Use the provided context if available. If no context is given, answer using your general knowledge. If you don't know the answer, say that you don't know and don't make up answers.",
       },
       {
         role: "user",
-        content: `Use the following pieces of context (or previous conversation if needed) to answer the user's question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+        content: `Use the following pieces of context (or previous conversation if needed) to answer the user's question. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
         
   \n----------------\n
   
@@ -76,15 +87,21 @@ export const POST = async (req: NextRequest) => {
     .join("")}
   
   \n----------------\n
-  
-  CONTEXT:
-  ${result.map((r) => r.pageContent).join("\n\n")}
+  ${contextText}
   
   USER INPUT: ${message}`,
       },
     ];
 
-    const response = await googleai.invoke(messages);
+    // Invoke Google AI with the constructed messages
+    const response = await googleai.invoke(messages, { streamUsage: true });
+
+    await MessageModel.create({
+      text: response.content,
+      isUserMessage: false,
+      file: fileId,
+      user: userDb?._id,
+    });
 
     return new Response(JSON.stringify(response), {
       headers: {
