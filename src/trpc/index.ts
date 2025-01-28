@@ -52,20 +52,18 @@ export const appRouter = router({
       const userDb = await UserModel.findOne({ kinde_id: userId });
       const file = await FileModel.findOne({ _id: fileId, user: userDb?._id });
       if (!file) throw new TRPCError({ code: "NOT_FOUND" });
+
       const messages: TMessage[] = await MessageModel.find({
         file: fileId,
+        ...(cursor ? { _id: { $lt: cursor } } : {}), // Fetch messages with _id less than cursor
       })
         .limit(limit + 1)
         .sort({ createdAt: -1 })
-        .select({ _id: 1, isUserMessage: 1, createdAt: 1, text: 1 })
-        .cursor(cursor ? { id: cursor } : undefined)
-        .toArray();
+        .select({ _id: 1, isUserMessage: 1, createdAt: 1, text: 1 });
 
-      let nextCursor: typeof cursor | undefined = undefined;
-      if (messages.length > limit) {
-        const nextItem = messages.pop();
-        nextCursor = nextItem?._id;
-      }
+      let nextCursor =
+        messages.length > limit ? messages.pop()?._id : undefined;
+
       return {
         messages,
         nextCursor,
