@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
       return new Response("File not found", { status: 404 });
     }
 
-    const messageDb = await MessageModel.create({
+    await MessageModel.create({
       text: message,
       isUserMessage: true,
       user: userDb?._id,

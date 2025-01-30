@@ -2,11 +2,14 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { privateProcedure, publicProcedure, router } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import dbConnect from "@/client/mongoose";
-import UserModel, { TUser } from "@/models/user-model";
+import UserModel from "@/models/user-model";
 import FileModel, { TFile } from "@/models/file-model";
 import { z } from "zod";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import MessageModel, { TMessage } from "@/models/message-model";
+import { absoluteUrl } from "@/lib/utils";
+import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
+import { PLANS } from "@/config/stripe";
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
@@ -28,8 +31,41 @@ export const appRouter = router({
 
     return { success: true, user };
   }),
+  createStripeSessions: privateProcedure.mutation(async ({ ctx }) => {
+    const { userId } = ctx;
+    const billingUrl = absoluteUrl("/dashboard/billing");
+    if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" });
+    await dbConnect();
+    const userDb = await UserModel.findOne({ kinde_id: userId });
+    if (!userDb) throw new TRPCError({ code: "UNAUTHORIZED" });
+    const subscriptions = await getUserSubscriptionPlan();
+    if (subscriptions.isSubscribed && userDb.stripeCustomerId) {
+      const stripeSession = await stripe.billingPortal.sessions.create({
+        customer: userDb.stripeCustomerId,
+        return_url: billingUrl,
+      });
+      return { url: stripeSession.url };
+    }
+    const stripeSession = await stripe.checkout.sessions.create({
+      success_url: billingUrl,
+      cancel_url: billingUrl,
+      payment_method_types: ["card", "paypal"],
+      mode: "subscription",
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price: PLANS.find((p) => p.name === "Pro")?.prices.priceIds.test,
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        userId: userId,
+      },
+    });
+    return { url: stripeSession.url };
+  }),
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
-    const { userId, user } = ctx;
+    const { userId } = ctx;
     await dbConnect();
     const userDb = await UserModel.findOne({ kinde_id: userId });
     if (!userDb) throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -61,7 +97,7 @@ export const appRouter = router({
         .sort({ createdAt: -1 })
         .select({ _id: 1, isUserMessage: 1, createdAt: 1, text: 1 });
 
-      let nextCursor =
+      const nextCursor =
         messages.length > limit ? messages.pop()?._id : undefined;
 
       return {

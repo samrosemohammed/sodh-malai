@@ -25,7 +25,7 @@ const Page = () => {
       router.push(origin ? `/${origin}` : "/dashboard");
     } else if (error && data) {
       console.error("Query failed! Error:", error.message);
-      error.data?.code === "UNAUTHORIZED" && router.push("/sign-in");
+      if (error.data?.code === "UNAUTHORIZED") router.push("/sign-in");
     }
   }, [isSuccess, error, router, origin, data]);
 

@@ -7,8 +7,8 @@ const Page = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   if (!user) redirect("auth-callback?origin=dashboard");
-  // const dbUser = await UserModel.findOne({ kinde_id: user.id });
-  // if (!dbUser) redirect("auth-callback?origin=dashboard");
+  const dbUser = await UserModel.findOne({ kinde_id: user.id });
+  if (!dbUser) redirect("auth-callback?origin=dashboard");
   return <Dashboard />;
 };
 

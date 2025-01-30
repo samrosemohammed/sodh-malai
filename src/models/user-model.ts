@@ -6,6 +6,11 @@ interface IUser {
   email: string;
   family_name: string;
   given_name: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
+  stripeCurrentPeriodEnd?: Date;
+  // stripeCurrentPeriodStart? :Date
 }
 
 export interface MongoUser extends IUser, Document {}
@@ -23,6 +28,10 @@ const UserSchema = new Schema<MongoUser>(
     email: { type: String, required: true },
     family_name: { type: String, required: true },
     given_name: { type: String, required: true },
+    stripeCustomerId: { type: String, unique: true, sparse: true },
+    stripeSubscriptionId: { type: String, unique: true, sparse: true },
+    stripePriceId: { type: String, sparse: true },
+    stripeCurrentPeriodEnd: { type: Date, sparse: true },
   },
   { timestamps: true }
 );

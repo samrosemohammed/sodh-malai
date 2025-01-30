@@ -1,6 +1,5 @@
 import { trpc } from "@/app/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
-import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import React, { createContext, ReactNode, useRef, useState } from "react";
 
@@ -25,7 +24,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [message, setMessage] = useState<string>("");
   const backupMessage = useRef("");
   const utils = trpc.useContext();
-  const { toast } = useToast();
+
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
       const response = await fetch("/api/message", {
@@ -50,8 +49,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         { fileId, limit: INFINITE_QUERY_LIMIT },
         (old) => {
           if (!old) return { pages: [], pageParams: [] };
-          let newPages = [...old.pages];
-          let latestPage = newPages[0]!;
+          const newPages = [...old.pages];
+          const latestPage = newPages[0]!;
           latestPage.messages = [
             {
               _id: crypto.randomUUID(),

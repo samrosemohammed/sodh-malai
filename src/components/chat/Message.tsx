@@ -56,7 +56,7 @@ const Message = forwardRef<HTMLDivElement, MessaeProps>(
                 })}
                 // Add error handling for ReactMarkDown
                 components={{
-                  p: ({ node, ...props }) => (
+                  p: ({ ...props }) => (
                     <p
                       {...props}
                       onError={(e) =>
@@ -90,5 +90,6 @@ const Message = forwardRef<HTMLDivElement, MessaeProps>(
     );
   }
 );
+Message.displayName = "Message";
 
 export default Message;
