@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 declare global {
-  const mongoose: any;
+  // eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
+  var mongoose: any;
 }
 
 const MONGODB_URI = process.env.MONGODB_URI!;

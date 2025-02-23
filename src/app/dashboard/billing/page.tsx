@@ -18,7 +18,8 @@ import { Loader2 } from "lucide-react";
 interface BillingFormProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
-const Page = async ({ subscriptionPlan }: BillingFormProps) => {
+const Page = ({ subscriptionPlan }: BillingFormProps) => {
+  console.log(subscriptionPlan);
   const { toast } = useToast();
   const { mutate: createStripeSessions, isPending } =
     trpc.createStripeSessions.useMutation({
