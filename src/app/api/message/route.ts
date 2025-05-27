@@ -40,6 +40,7 @@ export const POST = async (req: NextRequest) => {
     // Vectorize message
     const embeddings = new GoogleGenerativeAIEmbeddings({
       apiKey: process.env.GOOGLE_API_KEY,
+      model: 'models/embedding-001', // or 'models/text-embedding-004'
     });
     const pineconeIndex = pinecone.Index("sod-malai");
     const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
