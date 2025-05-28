@@ -25,7 +25,7 @@ export async function getUserSubscriptionPlan() {
   await dbConnect();
 
   const userDb = await UserModel.findOne({ kinde_id: user.id });
-
+  console.log("userDb for getsubscription", userDb);
   //   const dbUser = await db.user.findFirst({
   //     where: {
   //       id: user.id,

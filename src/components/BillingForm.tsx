@@ -13,6 +13,7 @@ interface BillingFormProps {
     subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 export const BillingForm = ({subscriptionPlan} : BillingFormProps) => {
+    console.log("Subscription Plan:", subscriptionPlan);
     const {toast} = useToast();
     const {mutate: createStripeSessions, isPending} = trpc.createStripeSessions.useMutation({
         onSuccess: ({url}) => {
