@@ -6,14 +6,9 @@ import UserModel from "@/models/user-model";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 
-interface PageProps {
-  params: {
-    fileid: string;
-  };
-}
-
-const Page = async ({ params }: PageProps) => {
-  const { fileid } = await params;
+type Params = Promise<{ fileid: string }>;
+const Page = async ({ params }: { params: Params }) => {
+  const {fileid} = await params;
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   if (!user || !user.id) redirect(`auth-callback?origin=dashboard/${fileid}`);

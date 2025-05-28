@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -42,7 +43,7 @@ export function constructMetadata({
     },
     icons,
     metadataBase: new URL("https://sodmalai.com"), // later change with the hosted url
-    themeColor: "#ffffff",
+    // themeColor: "#ffffff",
     ...(noIndex && {
       rebots: {
         index: false,
