@@ -14,9 +14,7 @@ export const AuthCallbackInner = () => {
   });
   console.log("AuthCallback data:", data);
 
- // In AuthCallbackInner.tsx
-
- useEffect(() => {
+  useEffect(() => {
     if (isSuccess && data?.success) {
         router.push(origin ? `/${origin}` : '/dashboard');
     }
