@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📄 Sodh-Malai – AI-Powered PDF Assistant
+Sodh-Malai is a full-stack AI-powered platform that allows users to upload PDF documents, ask context-based questions, and receive intelligent answers powered by LLMs and vector similarity search.
 
-## Getting Started
+## 🚀 Features
 
-First, run the development server:
+- 📥 PDF Upload via drag-and-drop UI
 
+- 🤖 AI Question Answering on Uploaded Documents
+
+- 🔐 Secure Authentication with Kinde
+
+- 💳 Stripe Integration for Premium Access
+
+- 🧠 Context-aware Retrieval with Pinecone & LangChain
+
+- 💬 Powered by Gemini API via Google AI Embeddings
+
+- 🗂 Organized User Dashboard for file and query management
+
+## 🛠️ Tech Stack
+
+- Frontend: Next.js, TypeScript, Tailwind CSS
+
+- Authentication: Kinde Auth
+
+- Storage: MongoDB (via Mongoose), UploadThing (PDF uploads)
+
+- AI & NLP: LangChain, Google AI Embeddings, Gemini API
+
+- Vector DB: Pinecone (semantic search & retrieval)
+
+- Payments: Stripe (subscriptions & webhook integration)
+
+## 📦 Getting Started
+1. Clone the Repository
+```bash
+git clone https://github.com/samrosemohammed/sodh-malai.git
+cd sodh-malai
+```
+2. Install Dependencies
+```base
+npm install
+```
+3. Set Up Environment Variables
+Create a .env.local file in the root of the project using the template:
+```base
+cp .env.example .env.local
+```
+Fill in the values with your credentials.
+
+4. Start the Development Server
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Visit http://localhost:3000 to view the app.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📤 Deployment
+Deploy easily on Vercel with environment variables configured.
